@@ -77,20 +77,19 @@ void menu() {
             case 4: get_student_by_name(); break;
             case 5: add_lesson(); break;
             case 6: add_score(); break;
-            case 7: get_lesson_statistics(); break;
+            // case 7: get_lesson_statistics(); break;
             case 8: printf("Exiting...\n"); break;
             default: printf("Invalid choice, try again.\n");
         }
     } while (choice != 8);
 }
-
+//talabalarni qo`shish uchun
 void add_student() {
     students = realloc(students, (student_count + 1) * sizeof(Student));
     if (!students) {
         printf("Memory allocation failed!\n");
         exit(1); // dasturni ishini yakunlash
     }
-
     printf("Enter first name: ");
     scanf("%s", students[student_count].first_name);
 
@@ -119,4 +118,158 @@ void add_student() {
     printf("Student added successfully!\n");
 }
 
-// yuqoridagi misoldan qarab bajarish mumkin
+void get_students(){
+    if (student_count > 0)
+    {
+        printf("ID | First Name | Last Name | Age | Phone        | Email                   | Parent's Name | Parent's Phone | Parent's Email\n"); 
+        for (int i = 0; i < student_count; i++)
+        {
+            printf("%-3d", i + 1);
+            printf("| %-10s ", students[i].first_name);
+            printf("| %-9s ", students[i].last_name);
+            printf("| %-3d ", students[i].age);
+            printf("| %-12s ", students[i].contact.phone);
+            printf("| %-23s ", students[i].contact.email);
+            printf("| %-13s ", students[i].parent.name);
+            printf("| %-14s ", students[i].parent.contact.phone);
+            printf("| %s\n", students[i].parent.contact.email);
+        }
+    }else
+    {
+        printf("Hozzircha birorta ham Talaba ro`yxatga olinmagan!");
+    }
+}
+
+void get_student_detail(){
+    int ID_1;
+    printf("Enter student ID to get :");
+    scanf("%d", &ID_1);
+    if (ID_1 -1 <= student_count && student_count != 0)
+    {
+        printf("First Name: %s\n", students[ID_1 - 1].first_name);
+        printf("Last Name : %s\n", students[ID_1 - 1].last_name);
+        printf("Age : %d\n", students[ID_1 - 1].age);
+        printf("Phone: %s\n", students[ID_1 - 1].contact.phone);
+        printf("Email: %s\n", students[ID_1 - 1].contact.email);
+        printf("Parent's Name: %s\n", students[ID_1 - 1].parent.name);
+        printf("Parent's Phone: %s\n", students[ID_1 - 1].parent.contact.phone);
+        printf("Parent's Email: %s\n", students[ID_1 - 1].parent.contact.email);
+    }else
+    {
+        printf("Bunday ID da talaba yuq!\n");
+    }   
+}
+
+void get_student_by_name(){
+    char search_name[40];
+    if (student_count != 0)
+    {   
+        printf("Talabani ismini kiriting: ");
+        scanf("%s", search_name);
+        printf("ID | First Name | Last Name | Age | Phone        | Email                   | Parent's Name | Parent's Phone | Parent's Email\n");
+        for (int i = 0; i < student_count; i++)
+        {
+            if (strstr(students[i].first_name, search_name))
+            {
+                printf("%-3d", i + 1);
+                printf("| %-10s ", students[i].first_name);
+                printf("| %-9s ", students[i].last_name);
+                printf("| %-3d ", students[i].age);
+                printf("| %-12s ", students[i].contact.phone);
+                printf("| %-23s ", students[i].contact.email);
+                printf("| %-13s ", students[i].parent.name);
+                printf("| %-14s ", students[i].parent.contact.phone);
+                printf("| %s\n", students[i].parent.contact.email);
+            }
+        }
+    }else
+    {
+        printf("Hozzircha bazada talabalar ro`yxati yuq!\n");
+    }
+}
+
+
+void add_lesson(){
+
+    lessons = realloc(lessons, (lesson_count + 1) * sizeof(Lesson));
+    if (!lessons)
+    {
+        printf("Memory allocation failed!\n");
+        exit(1); 
+    }
+    printf("Dars nomini kiriting: ");
+    scanf("%s", lessons[lesson_count].name);
+    lessons[lesson_count].id = lesson_count + 1;
+    lesson_count++;
+    printf("Lesson added successfully!\n");
+}
+
+void add_score(){
+    if (student_count != 0)
+    {
+        if (lesson_count != 0)
+        {
+            int choose_student; 
+            printf("ID | First Name | Last Name | Age | Phone        | Email                   | Parent's Name | Parent's Phone | Parent's Email\n");
+            for (int i = 0; i < student_count; i++)
+            {
+                printf("%-3d", i + 1);
+                printf("| %-10s ", students[i].first_name);
+                printf("| %-9s ", students[i].last_name);
+                printf("| %-3d ", students[i].age);
+                printf("| %-12s ", students[i].contact.phone);
+                printf("| %-23s ", students[i].contact.email);
+                printf("| %-13s ", students[i].parent.name);
+                printf("| %-14s ", students[i].parent.contact.phone);
+                printf("| %s\n", students[i].parent.contact.email);
+            }
+            printf("Yuqoridagi talabalardan qaysi birini baholamoqchisiz? \nularni tartib raqamini tanlang: ");
+            scanf("%d", &choose_student);
+            if (choose_student - 1 <= student_count)
+            {   
+                int choose_lesson; 
+                printf(" ID | Fanlar\n--------------------\n");
+                for (int i = 0; i < lesson_count; i++)
+                {
+                    printf(" %-2d ", lessons[i].id);
+                    printf("| %s\n",lessons[i].name);
+                }
+                printf("Fanni tanlang: ");
+                scanf("%d", choose_lesson);
+                if (choose_lesson - 1 <= lesson_count)
+                {
+                    scores = realloc(scores, (student_count + 1) * sizeof(Score));
+                    if (!scores)
+                    {
+                        printf("Memory allocation failed!\n");
+                        exit(1); 
+                    }
+                    printf("%s ismli talabaning %s fanidagi bahosini kiriting: ", students[choose_student - 1].first_name, lessons[choose_lesson].name);
+                    scanf("%d", scores[score_count].score);      
+                }else
+                {
+                    printf("Siz bazada yo`q bo`lgan fanni tanladingiz");
+                }
+                
+                
+            }else
+            {
+                printf("Bunday ID da talaba yuq");
+            }
+        
+            
+            
+            
+        }else
+        {
+            printf("Jadvalga birorta ham dars qo`yilmagan!\n");
+        }
+        
+        
+    }else
+    {
+        printf("Baholash uchun bazada talabalar bo`lishi kk, sizda esa ular yo`q :(\n");
+    }
+    
+    
+}
